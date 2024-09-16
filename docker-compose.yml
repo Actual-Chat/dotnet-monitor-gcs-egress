@@ -1,0 +1,110 @@
+services:
+  samples-app:
+    image: mcr.microsoft.com/dotnet/samples:aspnetapp-chiseled
+    ports:
+      - "8888:8080"
+    volumes:
+      - diagnostics:/tmp
+    environment:
+      COMPlus_EnableDiagnostics: 1
+      DOTNET_EnableDiagnostics: 1
+      DOTNET_DefaultDiagnosticPortSuspend: 0
+      COMPOSE_HTTP_TIMEOUT: 1200
+      DOTNET_DiagnosticPorts: /tmp/dotnet-monitor-port.sock
+  dotnet-monitor:
+    build:
+      context: .
+    command:
+      - "collect"
+      - "--urls"
+      - "https://+:54323"
+      - "--metricUrls"
+      - "http://+:54325"
+      - "--no-auth"
+      - "--metrics"
+    ports:
+      - "54323:54323"
+      - "54325:54325"
+    volumes:
+      - diagnostics:/tmp
+      - $GOOGLE_APPLICATION_CREDENTIALS:/etc/.config/gcloud/application_default_credentials.json
+    environment:
+      COMPlus_EnableDiagnostics: 1
+      DOTNET_EnableDiagnostics: 1
+      DOTNET_DefaultDiagnosticPortSuspend: 0
+      DotnetMonitor_DiagnosticPort_EndpointName: /tmp/port.sock
+      DotnetMonitor_DiagnosticPort_ConnectionMode: listen
+      DotnetMonitor_Storage_DumpTempFolder: /tmp/dumps
+      DotnetMonitor_Logging__Console__FormatterName: simple
+      DotnetMonitor_DiagnosticPort__ConnectionMode: "Listen"
+      DotnetMonitor_DiagnosticPort__EndpointName: "/tmp/dotnet-monitor-port.sock"
+      DotnetMonitor_Storage__DumpTempFolder: "/tmp/dumps"
+      DotnetMonitor_Urls: "http://*:54323"
+      DotnetMonitor_Metrics__Endpoints: "http://*:54325"
+      CorsConfiguration__AllowedOrigins: "*"
+      DotnetMonitor_GlobalCounter__IntervalSeconds: "10"
+      DotnetMonitor_Metrics__MetricCount: "6"
+      DotnetMonitor_DefaultProcess__Filters__0__Key: "ProcessName"
+      DotnetMonitor_DefaultProcess__Filters__0__Value: "aspnetapp"
+      DotnetMonitor_DefaultProcess__Filters__0__MatchType: "Exact"
+      DotnetMonitor_CollectionRules__HighCpu__Filters__0__Key: "ProcessName"
+      DotnetMonitor_CollectionRules__HighCpu__Filters__0__Value: "aspnetapp"
+      DotnetMonitor_CollectionRules__HighCpu__Filters__0__MatchType: "Exact"
+      DotnetMonitor_CollectionRules__HighCpu__Trigger__Type: "EventCounter"
+      DotnetMonitor_CollectionRules__HighCpu__Trigger__Settings__ProviderName: "System.Runtime"
+      DotnetMonitor_CollectionRules__HighCpu__Trigger__Settings__CounterName: "cpu-usage"
+      DotnetMonitor_CollectionRules__HighCpu__Trigger__Settings__GreaterThan: "40"
+      DotnetMonitor_CollectionRules__HighCpu__Actions__0__Type: "CollectTrace"
+      DotnetMonitor_CollectionRules__HighCpu__Actions__0__Settings__Profile: "Cpu"
+      DotnetMonitor_CollectionRules__HighCpu__Actions__0__Settings__Duration: "00:01:00"
+      DotnetMonitor_CollectionRules__HighCpu__Actions__0__Settings__Egress: "monitorFile"
+      DotnetMonitor_CollectionRules__HighCpu__Actions__1__Type: "CollectDump"
+      DotnetMonitor_CollectionRules__HighCpu__Actions__1__Settings__Type: "Mini"
+      DotnetMonitor_CollectionRules__HighCpu__Actions__1__Settings__Duration: "00:01:00"
+      DotnetMonitor_CollectionRules__HighCpu__Actions__1__Settings__Egress: "monitorFile"
+      DotnetMonitor_CollectionRules__HighCpu__Limits__ActionCount: "1"
+      DotnetMonitor_CollectionRules__HighCpu__Limits__ActionCountSlidingWindowDuration: "04:00:00"
+      DotnetMonitor_CollectionRules__Cpu1__Filters__0__Key: "ProcessName"
+      DotnetMonitor_CollectionRules__Cpu1__Filters__0__Value: "aspnetapp"
+      DotnetMonitor_CollectionRules__Cpu1__Filters__0__MatchType: "Exact"
+      DotnetMonitor_CollectionRules__Cpu1__Trigger__Type: "EventCounter"
+      DotnetMonitor_CollectionRules__Cpu1__Trigger__Settings__ProviderName: "System.Runtime"
+      DotnetMonitor_CollectionRules__Cpu1__Trigger__Settings__CounterName: "cpu-usage"
+      DotnetMonitor_CollectionRules__Cpu1__Trigger__Settings__GreaterThan: "1"
+      DotnetMonitor_CollectionRules__Cpu1__Trigger__Settings__SlidingWindowDuration: "00:01:00"
+      DotnetMonitor_CollectionRules__Cpu1__Actions__0__Type: "CollectDump"
+      DotnetMonitor_CollectionRules__Cpu1__Actions__0__Settings__Type: "Mini"
+      DotnetMonitor_CollectionRules__Cpu1__Actions__0__Settings__Duration: "00:01:00"
+      DotnetMonitor_CollectionRules__Cpu1__Actions__0__Settings__Egress: "monitorFile"
+      DotnetMonitor_CollectionRules__Cpu1__Limits__ActionCount: "1"
+      DotnetMonitor_CollectionRules__Cpu1__Limits__ActionCountSlidingWindowDuration: "04:00:00"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Filters__0__Key: "ProcessName"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Filters__0__Value: "aspnetapp"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Filters__0__MatchType: "Exact"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Trigger__Type: "EventCounter"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Trigger__Settings__ProviderName: "System.Runtime"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Trigger__Settings__CounterName: "working-set"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Trigger__Settings__GreaterThan: "1024"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Trigger__Settings__SlidingWindowDuration: "00:01:00"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Actions__0__Type: "CollectGCDump"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Actions__0__Settings__Egress: "monitorFile"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Limits__ActionCount: "1"
+      DotnetMonitor_CollectionRules__WorkingSet1GB__Limits__ActionCountSlidingWindowDuration: "04:00:00"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Filters__0__Key: "ProcessName"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Filters__0__Value: "aspnetapp"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Filters__0__MatchType: "Exact"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Trigger__Type: "EventCounter"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Trigger__Settings__ProviderName: "System.Runtime"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Trigger__Settings__CounterName: "working-set"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Trigger__Settings__GreaterThan: "2048"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Trigger__Settings__SlidingWindowDuration: "00:01:00"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Actions__0__Type: "CollectGCDump"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Actions__0__Settings__Egress: "monitorFile"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Limits__ActionCount: "1"
+      DotnetMonitor_CollectionRules__WorkingSet2GB__Limits__ActionCountSlidingWindowDuration: "1.00:00:00"
+      DotnetMonitor_Egress__FileSystem__monitorFile__directoryPath: "/mnt/gcs-blobs"
+      DotnetMonitor_Egress__FileSystem__monitorFile__intermediateDirectoryPath: "/intermediate-dumps"
+      DotnetMonitor_Egress__GoogleCloudStorage__monitorBlob__BucketName: "tmp-gcs-dumps"
+      GOOGLE_APPLICATION_CREDENTIALS: /etc/.config/gcloud/application_default_credentials.json
+volumes:
+  diagnostics:

@@ -1,1 +1,1 @@
-# dotnet-monitor-gcs-egress
+# Google cloud storage egress extension for dotnet monitor

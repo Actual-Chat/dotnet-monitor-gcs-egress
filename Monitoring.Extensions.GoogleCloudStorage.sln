@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitoring.Extension.GoogleCloudStorage", "Monitoring.Extension.GoogleCloudStorage\Monitoring.Extension.GoogleCloudStorage.csproj", "{0C4710D5-A34B-4A75-B62C-09DDA9AEF819}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{BE1DD14F-7051-420E-9F8B-0788E4DFC91F}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C4710D5-A34B-4A75-B62C-09DDA9AEF819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C4710D5-A34B-4A75-B62C-09DDA9AEF819}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C4710D5-A34B-4A75-B62C-09DDA9AEF819}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C4710D5-A34B-4A75-B62C-09DDA9AEF819}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
