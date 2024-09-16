@@ -1,4 +1,5 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0.401-1-bookworm-slim as restore
+ARG DOTNET_SDK_TAG=8.0.401-1-bookworm-slim
+FROM mcr.microsoft.com/dotnet/sdk:$DOTNET_SDK_TAG as restore
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_CLI_UI_LANGUAGE=en-US \
     DOTNET_SVCUTIL_TELEMETRY_OPTOUT=1 \
@@ -22,6 +23,6 @@ FROM restore as build
 COPY . .
 RUN dotnet publish --no-restore --nologo -c Release -nodeReuse:false -o /app Monitoring.Extension.GoogleCloudStorage/Monitoring.Extension.GoogleCloudStorage.csproj
 
-
-FROM mcr.microsoft.com/dotnet/monitor/base:8.0.4-ubuntu-chiseled
+ARG MONITOR_TAG
+FROM mcr.microsoft.com/dotnet/monitor/base:$MONITOR_TAG
 COPY --from=build ["/app", "/app/extensions/GoogleCloudStorage"]
