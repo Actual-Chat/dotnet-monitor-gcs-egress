@@ -23,7 +23,7 @@ permissions:
 env:
   MONITOR_TAG: "8.0.4-ubuntu-chiseled"
   DOTNET_SDK_TAG: "8.0.401-1-bookworm-slim"
-  TARGET_IMAGE_NAME: "dotnet-monitor"
+  TARGET_IMAGE_NAME: "monitor"
 
 jobs:
   build:
