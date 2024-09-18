@@ -23,7 +23,7 @@ permissions:
 env:
   MONITOR_TAG: "8.0.4-ubuntu-chiseled"
   DOTNET_SDK_TAG: "8.0.401-1-bookworm-slim"
-  TARGET_IMAGE_NAME: "dotnet-monitor"
+  TARGET_IMAGE_NAME: "monitor"
 
 jobs:
   build:
@@ -44,14 +44,14 @@ jobs:
           install: true
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build image 'dotnet-monitor:${{ env.MONITOR_TAG }}'
-        uses: docker/build-push-action@v4
+      - name: Build image '${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}'
+        uses: docker/build-push-action@v6
         with:
           context: .
           tags: |
@@ -70,14 +70,14 @@ jobs:
     steps:
       - name: Authenticate to Google Cloud
         id: auth
-        uses: google-github-actions/auth@v0.7.2
+        uses: google-github-actions/auth@v2
         with:
           token_format: access_token
           workload_identity_provider: projects/1074465586741/locations/global/workloadIdentityPools/actual-identity-pool/providers/github-actual-chat
           service_account: sa-deploy-bot@actual-infrastructure.iam.gserviceaccount.com
 
       - name: Login to GAR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: us-central1-docker.pkg.dev
           username: oauth2accesstoken
@@ -85,7 +85,7 @@ jobs:
 
       - name: Deploy dev
         if: ${{ inputs.deployToDev }}
-        uses: akhilerm/tag-push-action@v2.0.0
+        uses: akhilerm/tag-push-action@v2.1.0
         with:
           src: ghcr.io/actual-chat/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}
           dst: |
@@ -93,7 +93,7 @@ jobs:
 
       - name: Deploy prod
         if: ${{ inputs.deployToProd }}
-        uses: akhilerm/tag-push-action@v2.0.0
+        uses: akhilerm/tag-push-action@v2.1.0
         with:
           src: ghcr.io/actual-chat/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}
           dst: |

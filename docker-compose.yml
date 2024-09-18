@@ -16,6 +16,7 @@ services:
       context: .
       args:
         MONITOR_TAG: 8.0.4-ubuntu-chiseled
+        DOTNET_SDK_TAG: 8.0.401-1-bookworm-slim
     command:
       - "collect"
       - "--urls"
