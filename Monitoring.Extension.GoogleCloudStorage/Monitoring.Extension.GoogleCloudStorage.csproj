@@ -3,11 +3,12 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <Description>Google Cloud Storage extension for dotnet-monitor</Description>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AssemblyName>dotnet-monitor-egress-googlecloudstorage</AssemblyName>
         <RootNamespace>Microsoft.Diagnostics.Monitoring.Extension.GoogleCloudStorage</RootNamespace>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
