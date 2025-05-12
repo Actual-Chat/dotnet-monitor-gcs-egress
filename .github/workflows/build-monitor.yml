@@ -21,8 +21,8 @@ permissions:
   statuses: write
 
 env:
-  MONITOR_TAG: "9.0.0"
-  DOTNET_SDK_TAG: "9.0.101-bookworm-slim"
+  MONITOR_TAG: "9.0.2"
+  DOTNET_SDK_TAG: "9.0.203-bookworm-slim"
   TARGET_IMAGE_NAME: "monitor"
 
 jobs:
