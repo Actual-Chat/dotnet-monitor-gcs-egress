@@ -15,8 +15,8 @@ services:
     build:
       context: .
       args:
-        MONITOR_TAG: 9.0.2
-        DOTNET_SDK_TAG: 9.0.203-bookworm-slim
+        MONITOR_TAG: 9.0.3
+        DOTNET_SDK_TAG: 9.0.300-azurelinux3.0
     command:
       - "collect"
       - "--urls"
