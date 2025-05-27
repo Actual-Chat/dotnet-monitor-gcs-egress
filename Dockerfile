@@ -24,5 +24,12 @@ FROM restore as build
 COPY . .
 RUN dotnet publish --no-restore --nologo -c Release -nodeReuse:false -o /app Monitoring.Extension.GoogleCloudStorage/Monitoring.Extension.GoogleCloudStorage.csproj
 
+FROM restore as downloader
+# prepare curl with libs it depends on
+RUN mkdir -p /deps && \
+    ldd /usr/bin/curl | sed -n 's/.*=> *\([^ ]*\) (.*/\1/p' | xargs -I '{}' cp -v '{}' /deps/
+
 FROM mcr.microsoft.com/dotnet/monitor/base:$MONITOR_TAG
 COPY --from=build ["/app", "/app/extensions/GoogleCloudStorage"]
+COPY --from=downloader /deps/ /usr/lib/
+COPY --from=downloader /usr/bin/curl /usr/bin/curl
