@@ -1,6 +1,6 @@
-ARG DOTNET_SDK_TAG
-ARG MONITOR_TAG
-FROM mcr.microsoft.com/dotnet/sdk:$DOTNET_SDK_TAG as restore
+ARG DOTNET_SDK_TAG=""
+ARG MONITOR_TAG=""
+FROM mcr.microsoft.com/dotnet/sdk:$DOTNET_SDK_TAG AS restore
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_CLI_UI_LANGUAGE=en-US \
     DOTNET_SVCUTIL_TELEMETRY_OPTOUT=1 \
@@ -19,17 +19,11 @@ COPY */*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done
 RUN dotnet restore
 
-
-FROM restore as build
+FROM restore AS build
 COPY . .
 RUN dotnet publish --no-restore --nologo -c Release -nodeReuse:false -o /app Monitoring.Extension.GoogleCloudStorage/Monitoring.Extension.GoogleCloudStorage.csproj
-
-FROM restore as downloader
-# prepare curl with libs it depends on
-RUN mkdir -p /deps && \
-    ldd /usr/bin/curl | sed -n 's/.*=> *\([^ ]*\) (.*/\1/p' | xargs -I '{}' cp -v '{}' /deps/
+RUN dotnet publish --no-restore --nologo -c Release -nodeReuse:false -p:DebugType=None -o /healthz LivenessProbe
 
 FROM mcr.microsoft.com/dotnet/monitor/base:$MONITOR_TAG
 COPY --from=build ["/app", "/app/extensions/GoogleCloudStorage"]
-COPY --from=downloader /deps/ /usr/lib/
-COPY --from=downloader /usr/bin/curl /usr/bin/curl
+COPY --from=build ["/healthz", "/app/healthz"]
