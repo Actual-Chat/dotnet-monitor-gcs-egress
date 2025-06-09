@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{BE1DD14F-7051-42
 		.github\workflows\build-monitor.yml = .github\workflows\build-monitor.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivenessProbe", "LivenessProbe\LivenessProbe.csproj", "{2177E990-0A36-464B-9744-DDE76B377B8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{0C4710D5-A34B-4A75-B62C-09DDA9AEF819}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C4710D5-A34B-4A75-B62C-09DDA9AEF819}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C4710D5-A34B-4A75-B62C-09DDA9AEF819}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2177E990-0A36-464B-9744-DDE76B377B8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2177E990-0A36-464B-9744-DDE76B377B8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2177E990-0A36-464B-9744-DDE76B377B8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2177E990-0A36-464B-9744-DDE76B377B8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

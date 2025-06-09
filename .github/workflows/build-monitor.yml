@@ -11,6 +11,9 @@ on:
       deployToProd:
         description: Push image to prod GAR
         type: boolean
+      buildNumber:
+        description: Build number
+        type: number
 
 permissions:
   contents: read
@@ -22,6 +25,7 @@ permissions:
 
 env:
   MONITOR_TAG: "9.0.3"
+  TARGET_TAG_SUFFIX: ${{ inputs.buildNumber > 0 && format('-{0}', inputs.buildNumber) || '' }}
   DOTNET_SDK_TAG: "9.0.300-azurelinux3.0"
   TARGET_IMAGE_NAME: "monitor"
 
@@ -55,7 +59,7 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/actual-chat/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}
+            ghcr.io/actual-chat/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}${{ env.TARGET_TAG_SUFFIX }}
           push: true
           build-args: |
             MONITOR_TAG=${{ env.MONITOR_TAG }}
@@ -89,7 +93,7 @@ jobs:
         with:
           src: ghcr.io/actual-chat/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}
           dst: |
-            us-central1-docker.pkg.dev/actual-infrastructure/docker-dev/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}
+            us-central1-docker.pkg.dev/actual-infrastructure/docker-dev/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}${{ env.TARGET_TAG_SUFFIX }}
 
       - name: Deploy prod
         if: ${{ inputs.deployToProd }}
@@ -97,4 +101,4 @@ jobs:
         with:
           src: ghcr.io/actual-chat/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}
           dst: |
-            us-central1-docker.pkg.dev/actual-infrastructure/docker/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}
+            us-central1-docker.pkg.dev/actual-infrastructure/docker/${{ env.TARGET_IMAGE_NAME }}:${{ env.MONITOR_TAG }}${{ env.TARGET_TAG_SUFFIX }}
